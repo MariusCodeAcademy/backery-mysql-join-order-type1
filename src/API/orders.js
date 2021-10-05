@@ -42,19 +42,9 @@ module.exports = router;
 // GET /order - grazina visus uzsakymus
 
 // GET /order/:id - grazina uzsakyma kurio id = :id kartu su produkto info
-/* 
-INSERT INTO orders (product_id, client, address, town, qty)
-VALUES(5, 'James Brown', "first st 15", "London", 2);
 
-UPDATE `producs` 
-SET `producs`.`qty` = `producs`.`qty` - 2
-WHERE `producs`.id = 5
-*/
+// GET /order/price/:id - grazina uzsakymo kaina
 
-// {
-//   "product_id": 5,
-//   "client": "Jane Doe",
-//   "address": "backery st 15",
-//   "town": "LA"
-//   "qty": 3
-// }
+// GET /order/total - grazina visus uzsakymu bendra kaina
+
+// Sukurti galimybe grazinti preke
