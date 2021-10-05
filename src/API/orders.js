@@ -35,6 +35,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+// GET /order/total - grazina visus uzsakymu bendra kaina
+router.get('/total', async (req, res) => {
+  try {
+    const conn = await mysql.createConnection(dbConfig);
+    const sql = `
+    SELECT SUM(orders.qty * products.price) AS \`totalAmmount\`
+    FROM orders
+    INNER JOIN products ON products.id = orders.product_id
+    `;
+    const [result] = await conn.query(sql);
+    res.send({ msg: 'success', total: result[0].totalAmmount });
+    await conn.end();
+  } catch (error) {
+    console.log('/total/ got error ', error.message);
+    res.status(500).send({ error: 'Error getting total' });
+  }
+});
+
 // GET /order/:id - grazina uzsakyma kurio id = :id kartu su produkto info
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
@@ -65,8 +83,11 @@ module.exports = router;
 
 // GET /order/price/:id - grazina uzsakymo kaina
 
-// GET /order/total - grazina visus uzsakymu bendra kaina
-
 // GET /order/:id - grazina uzsakyma kurio id = :id kartu su produkto info
 
 // Sukurti galimybe grazinti preke
+
+// susikurti kategoriju lentele, ir bent 3 kategorijas
+// sujungti kategorijas su produktais su FK
+// GET /orders/all atvaizduoti visus orders su visa products info ir kategorijos pav
+// GET /order/:id route atvaizduoti papildomai kategorijos pavadinima
