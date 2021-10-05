@@ -35,16 +35,38 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+// GET /order/:id - grazina uzsakyma kurio id = :id kartu su produkto info
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).send({ error: 'no id given' });
 
-// const order = { id: 5, qty: 2 };
+  const sql = `
+  SELECT orders.client, orders.town, products.name, orders.qty, products.price, orders.qty * products.price AS \`total ammount\`
+  FROM orders 
+  INNER JOIN products
+  ON orders.product_id = products.id
+  WHERE orders.id = ?
+  `;
+  try {
+    const conn = await mysql.createConnection(dbConfig);
+    const [result] = await conn.query(sql, id);
+    if (result.length === 0) return res.send({ msg: 'no orders found' });
+    res.send({ msg: 'success', order: result[0] });
+    await conn.end();
+  } catch (error) {
+    console.log('/order/:id got error ', error.message);
+    res.status(500).send({ error: 'Error getting orders' });
+  }
+});
 
 // GET /order - grazina visus uzsakymus
 
-// GET /order/:id - grazina uzsakyma kurio id = :id kartu su produkto info
+module.exports = router;
 
 // GET /order/price/:id - grazina uzsakymo kaina
 
 // GET /order/total - grazina visus uzsakymu bendra kaina
+
+// GET /order/:id - grazina uzsakyma kurio id = :id kartu su produkto info
 
 // Sukurti galimybe grazinti preke
