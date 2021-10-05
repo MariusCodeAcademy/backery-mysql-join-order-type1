@@ -3,7 +3,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 // Routes
-const productsRoutes = require('./API/producs');
+const productsRoutes = require('./API/products');
+const ordersRoutes = require('./API/orders');
 
 const PORT = process.env.SERVER_PORT || 3000;
 
@@ -20,5 +21,6 @@ app.get('/', (req, res) => {
 
 // use routes
 app.use('/products', productsRoutes);
+app.use('/order', ordersRoutes);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
