@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Oct 05, 2021 at 05:48 AM
+-- Generation Time: Oct 05, 2021 at 06:38 AM
 -- Server version: 5.7.32
 -- PHP Version: 7.4.12
 
@@ -26,22 +26,42 @@ CREATE TABLE `orders` (
   `address` varchar(50) NOT NULL,
   `town` varchar(50) NOT NULL,
   `time_stamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `product_id` int(10) NOT NULL
+  `product_id` int(10) NOT NULL,
+  `qty` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `client`, `address`, `town`, `time_stamp`, `product_id`, `qty`) VALUES
+(1, 'James Brown', 'first st 15', 'London', '2021-10-05 09:01:18', 5, 1),
+(2, 'James Brown', 'first st 15', 'London', '2021-10-05 09:02:45', 5, 2);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `producs`
+-- Table structure for table `products`
 --
 
-CREATE TABLE `producs` (
+CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `price` decimal(5,2) UNSIGNED NOT NULL,
   `qty` int(10) UNSIGNED NOT NULL,
   `category_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`id`, `name`, `price`, `qty`, `category_id`) VALUES
+(1, 'White Bread', '2.00', 10, NULL),
+(2, 'Dark Bread', '2.50', 5, NULL),
+(3, 'Blubery Muffin', '1.00', 5, NULL),
+(4, 'Strawbery Muffin', '1.50', 0, NULL),
+(5, 'Baguete', '0.90', 7, NULL);
 
 --
 -- Indexes for dumped tables
@@ -55,9 +75,9 @@ ALTER TABLE `orders`
   ADD KEY `orderToProduct` (`product_id`);
 
 --
--- Indexes for table `producs`
+-- Indexes for table `products`
 --
-ALTER TABLE `producs`
+ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -68,13 +88,13 @@ ALTER TABLE `producs`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `producs`
+-- AUTO_INCREMENT for table `products`
 --
-ALTER TABLE `producs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -84,4 +104,4 @@ ALTER TABLE `producs`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orderToProduct` FOREIGN KEY (`product_id`) REFERENCES `producs` (`id`);
+  ADD CONSTRAINT `orderToProduct` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
