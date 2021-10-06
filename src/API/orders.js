@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   // POST /order - sukuriam nauja uzsakyma.
+  // pavaliduoti req.body naudojan jusu paciu sukurta arba joi validacija
+  // pranesti su res.send apie klaidas kai netinkami ivesties laukai
   // res.send('about to create a order');
   // return;
   console.log('/orders POST got ', req.body);
@@ -53,16 +55,39 @@ router.get('/total', async (req, res) => {
   }
 });
 
+// GET /orders/all atvaizduoti visus orders su visa products info ir kategorijos pav
+router.get('/all', async (req, res) => {
+  try {
+    const conn = await mysql.createConnection(dbConfig);
+    const sql = `
+    SELECT orders.town, orders.address, orders.qty, orders.client, products.name, products.price, categories.cat_name
+    FROM orders
+    INNER JOIN products 
+    ON orders.product_id = products.id
+    INNER JOIN categories
+    ON categories.id = products.category_id
+    `;
+    const [result] = await conn.query(sql);
+    res.send({ msg: 'success', result });
+    await conn.end();
+  } catch (error) {
+    console.log('error gettting /orders/all ', error.message);
+    res.status(500).send({ error: 'Something went wrong' });
+  }
+});
+
 // GET /order/:id - grazina uzsakyma kurio id = :id kartu su produkto info
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).send({ error: 'no id given' });
 
   const sql = `
-  SELECT orders.client, orders.town, products.name, orders.qty, products.price, orders.qty * products.price AS \`total ammount\`
+  SELECT orders.client, orders.town, categories.cat_name AS Category, products.name, orders.qty, products.price, orders.qty * products.price AS \`total ammount\`
   FROM orders 
   INNER JOIN products
   ON orders.product_id = products.id
+  INNER JOIN categories 
+  ON categories.id = products.category_id
   WHERE orders.id = ?
   `;
   try {
@@ -87,7 +112,4 @@ module.exports = router;
 
 // Sukurti galimybe grazinti preke
 
-// susikurti kategoriju lentele, ir bent 3 kategorijas
-// sujungti kategorijas su produktais su FK
-// GET /orders/all atvaizduoti visus orders su visa products info ir kategorijos pav
 // GET /order/:id route atvaizduoti papildomai kategorijos pavadinima

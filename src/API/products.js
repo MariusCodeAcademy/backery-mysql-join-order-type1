@@ -17,4 +17,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+// POST /products - sukurti nauja produkta. Validuoti ivesties laukus
+
+// GET /products/orders/:id  - gauti visus id paduoto produkto orderius
+
+// GET /products/:id - grazina visa info apie produkta iskaitant cat pavadinima
+
 module.exports = router;
+
+// tiems kas pasidare viska sunkesne uzduotis
+// mes kiekvieno endpointo metu kartojam didele dali kodo
+// pabandyti pasirasyti pabalbine funkcija kuri sumazintu kodo kartojima
+// ir mes tik paduotume tai kas kinta kiekvienu atveju.
+// pradziai pabandyti pernaudojima tik vieno tipo uzklausai pvz GET
+// antras levelis bet kurio tipo uzklausai
