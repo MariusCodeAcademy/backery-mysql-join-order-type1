@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Oct 05, 2021 at 06:38 AM
+-- Generation Time: Oct 06, 2021 at 07:30 AM
 -- Server version: 5.7.32
 -- PHP Version: 7.4.12
 
@@ -13,6 +13,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `backery`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL,
+  `cat_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `cat_name`) VALUES
+(1, 'Bread'),
+(2, 'Desert'),
+(3, 'Home made');
 
 -- --------------------------------------------------------
 
@@ -36,7 +56,9 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`id`, `client`, `address`, `town`, `time_stamp`, `product_id`, `qty`) VALUES
 (1, 'James Brown', 'first st 15', 'London', '2021-10-05 09:01:18', 5, 1),
-(2, 'James Brown', 'first st 15', 'London', '2021-10-05 09:02:45', 5, 2);
+(2, 'James Brown', 'first st 15', 'London', '2021-10-05 09:02:45', 5, 2),
+(3, 'Jane Doe', 'backery st 15', 'LA', '2021-10-05 09:58:56', 3, 1),
+(4, 'Jane Brown', 'backery st 15', 'LA', '2021-10-05 10:05:48', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -57,15 +79,21 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `price`, `qty`, `category_id`) VALUES
-(1, 'White Bread', '2.00', 10, NULL),
-(2, 'Dark Bread', '2.50', 5, NULL),
-(3, 'Blubery Muffin', '1.00', 5, NULL),
-(4, 'Strawbery Muffin', '1.50', 0, NULL),
-(5, 'Baguete', '0.90', 7, NULL);
+(1, 'White Bread', '2.00', 10, 1),
+(2, 'Dark Bread', '2.50', 5, 1),
+(3, 'Blubery Muffin', '1.00', 4, 2),
+(4, 'Strawbery Muffin', '1.50', 0, 2),
+(5, 'Baguete', '0.90', 7, 3);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `orders`
@@ -78,17 +106,24 @@ ALTER TABLE `orders`
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `productToCat` (`category_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -105,3 +140,9 @@ ALTER TABLE `products`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orderToProduct` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+
+--
+-- Constraints for table `products`
+--
+ALTER TABLE `products`
+  ADD CONSTRAINT `productToCat` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
