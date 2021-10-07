@@ -43,10 +43,18 @@ init();
 catContainer.addEventListener('click', (event) => {
   // if pressed on cat
   if (event.target.classList.contains('cat-title')) {
-    console.log('pressed on id', event.target.parentElement.dataset.catId);
+    const id = event.target.parentElement.dataset.catId;
+    console.log('pressed on id', id);
+    getItemsByCategory(id);
   }
 });
 
-async function getItemsByCategory(id) {}
+async function getItemsByCategory(id) {
+  const localUrl =
+    id === '0' ? `${url}/products` : `${url}/products/category/${id}`;
+  const resp = await fetch(localUrl);
+  const data = await resp.json();
+  console.log('data getItemsByCategory', data);
+}
 
 // padaryti kad paspaudus ant one-cat div mes gautume jo id consoleje
