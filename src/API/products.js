@@ -1,27 +1,24 @@
-const e = require('express');
 const express = require('express');
 const mysql = require('mysql2/promise');
 const dbConfig = require('../dbConfig');
 
 const router = express.Router();
 
+const { dbGetAction, dbFail } = require('../utils/helper');
+
 router.get('/', async (req, res) => {
   // GET /products - grazina visus produktus kuriu kiekis daugiau uz 0
-  try {
-    const conn = await mysql.createConnection(dbConfig);
-    const sql = `
+  const sql = `
     SELECT products.id, products.name, products.price, products.qty, categories.cat_name AS category
     FROM products
     INNER JOIN categories
     ON products.category_id = categories.id
     `;
-    const [result] = await conn.query(sql);
-    res.send({ msg: 'success', result });
-    await conn.end();
-  } catch (error) {
-    console.log('/producs got error ', error.message);
-    res.status(500).send({ error: 'Error getting producs' });
+  const dbResult = await dbGetAction(sql);
+  if (dbResult === false) {
+    return dbFail(res, 'Error getting producs');
   }
+  res.send({ msg: 'success', result: dbResult.result });
 });
 
 // POST /products - sukurti nauja produkta. Validuoti ivesties laukus
