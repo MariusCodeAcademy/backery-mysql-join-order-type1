@@ -1,9 +1,9 @@
 const express = require('express');
+const joi = require('joi');
 
 const router = express.Router();
 
 const { dbGetAction, dbFail, dbSuccess } = require('../utils/helper');
-const { route } = require('./orders');
 
 // GET /categories - grazina visas kategorijas
 router.get('/', async (req, res) => {
@@ -36,7 +36,17 @@ router.get('/:name', async (req, res) => {
 // POST /categories/ - sukuriam nauja kategorija
 router.post('/', async (req, res) => {
   const { newCatName } = req.body;
-  //TODO: Validation
+
+  const catSchema = joi.object({
+    newCatName: joi.string().min(3).max(50).required(),
+  });
+  // Validation
+  try {
+    await catSchema.validateAsync(req.body);
+  } catch (error) {
+    return dbFail(res, 'bad input', 400);
+  }
+
   const sql = `
   INSERT INTO categories (cat_name)
   VALUES (?)`;
