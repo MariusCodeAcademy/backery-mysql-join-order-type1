@@ -17,15 +17,15 @@ async function getCategories() {
 // generate html to display categories
 function generateCategories(dataArr, dest = '') {
   const firstEl = `
-  <div class="one-cat">
-    <h3 class="border p-5 shadow-sm">All</h3>
+  <div class="one-cat" data-cat-id=0>
+    <h3 class="cat-title border p-5 shadow-sm">All</h3>
   </div>
   `;
   const result = dataArr
     .map(
       (cat) => `
       <div class="one-cat" data-cat-id=${cat.id} >
-        <h3 class="border p-5">${cat.cat_name}</h3>
+        <h3 class="cat-title border p-5">${cat.cat_name}</h3>
       </div>
   `,
     )
@@ -40,5 +40,13 @@ async function init() {
 }
 init();
 
-// pasiduoti id musu one-cat divui
+catContainer.addEventListener('click', (event) => {
+  // if pressed on cat
+  if (event.target.classList.contains('cat-title')) {
+    console.log('pressed on id', event.target.parentElement.dataset.catId);
+  }
+});
+
+async function getItemsByCategory(id) {}
+
 // padaryti kad paspaudus ant one-cat div mes gautume jo id consoleje

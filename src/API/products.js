@@ -4,8 +4,8 @@ const router = express.Router();
 
 const { dbGetAction, dbFail, dbSuccess } = require('../utils/helper');
 
+// GET /products - grazina visus produktus kuriu kiekis daugiau uz 0
 router.get('/', async (req, res) => {
-  // GET /products - grazina visus produktus kuriu kiekis daugiau uz 0
   const sql = `
     SELECT products.id, products.name, products.price, products.qty, categories.cat_name AS category
     FROM products
@@ -19,9 +19,18 @@ router.get('/', async (req, res) => {
   return dbSuccess(res, dbResult);
 });
 
-// POST /products - sukurti nauja produkta. Validuoti ivesties laukus
-
-// GET /products/orders/:id  - gauti visus id paduoto produkto orderius
+router.get('/category/:id', async (req, res) => {
+  const sql = `
+  SELECT id, name, price, qty
+  FROM products
+  WHERE category_id = ?
+  `;
+  const dbResult = await dbGetAction(sql, [req.params.id]);
+  if (dbResult === false) {
+    return dbFail(res, 'error getting products by cat');
+  }
+  dbSuccess(res, dbResult);
+});
 
 // GET /products/:product_id - grazina visa info apie produkta iskaitant cat pavadinima
 // eslint-disable-next-line consistent-return
