@@ -1,0 +1,8 @@
+.one-cat {
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+}
+
+.one-cat:hover {
+  text-decoration: underline;
+}
