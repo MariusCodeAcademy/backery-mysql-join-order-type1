@@ -29,24 +29,33 @@ async function generateCategories(dataArr, dest = '') {
 
   /* 
   [
-Object { cat_name: "Bread", total: 3 }
-Object { cat_name: "Desert", total: 3 }
-Object { cat_name: "Home made", total: 1 }
-Object { cat_name: "Pica", total: 0 }
+  Object { cat_name: "Bread", total: 3 }
+  Object { cat_name: "Desert", total: 3 }
+  Object { cat_name: "Home made", total: 1 }
+  Object { cat_name: "Pica", total: 0 }
   ]
   */
-  // getTotalByName(name) - returns total
+
+  const totalFromArr = catsWithTotals.reduce(
+    (total, curr) => total + curr.total,
+    0,
+  );
 
   const firstEl = `
   <div class="one-cat" data-cat-id=0>
-    <h3 class="cat-title border p-5 shadow-sm">All <span class="cat__qty" >(50)</span></h3>
+    <h3 class="cat-title border p-5 shadow-sm">All <span class="cat__qty" >(${totalFromArr})</span></h3>
   </div>
   `;
   const result = dataArr
     .map(
       (cat) => `
       <div class="one-cat" data-cat-id=${cat.id} >
-        <h3 class="cat-title border p-5 shadow-sm">${cat.cat_name} <span class="cat__qty" >(getTotalByName(cat.cat_name))</span></h3>
+        <h3 class="cat-title border p-5 shadow-sm">${
+          cat.cat_name
+        } <span class="cat__qty" >(${getTotalByName(
+        catsWithTotals,
+        cat.cat_name,
+      )})</span></h3>
       </div>
   `,
     )
@@ -96,6 +105,13 @@ async function getCategoriesAndQtys() {
   return data.msg === 'success'
     ? data.data
     : console.warn('Did not get getCategoriesAndQtys');
+}
+
+// getTotalByName(name) - returns total
+function getTotalByName(arr, name) {
+  const foundItem = arr.find((el) => el.cat_name === name);
+  if (!foundItem) return 'not found';
+  return foundItem.total;
 }
 
 // padaryti kad paspaudus ant one-cat div mes gautume jo id consoleje
