@@ -1,3 +1,6 @@
+body {
+  margin-bottom: 600px;
+}
 .one-cat {
   cursor: pointer;
   transition: all 0.2s ease-in;

@@ -25,7 +25,7 @@ async function getCategories() {
 // generate html to display categories
 async function generateCategories(dataArr, dest = '') {
   const catsWithTotals = await getCategoriesAndQtys();
-  console.log('catsWithTotals', catsWithTotals);
+  // console.log('catsWithTotals', catsWithTotals);
 
   /* 
   [
@@ -85,12 +85,22 @@ async function getItemsByCategory(id) {
 
 function generateProducsList(dataArr, dest) {
   if (!Array.isArray(dataArr)) {
-    return (dest.innerHTML = `<li><strong>name: </strong> ${dataArr.name}, <strong>price</strong> ${dataArr.price}eur, <strong>quantity:</strong> ${dataArr.qty} </li>`);
+    return (dest.innerHTML = `<li class="list-group-item" ><strong>name: </strong> ${dataArr.name}, <strong>price</strong> ${dataArr.price}eur, <strong>quantity:</strong> ${dataArr.qty} </li>`);
   }
+
+  // if no producs found
+  if (dataArr.length === 0) {
+    return (dest.innerHTML = `
+    <div class="alert alert-warning" role="alert">
+      No products found 
+    </div>
+    `);
+  }
+
   const productListString = dataArr
     .map(
       (p) => `
-  <li><strong>name: </strong> ${p.name}, <strong>price</strong> ${p.price}eur, <strong>quantity:</strong> ${p.qty} </li>
+  <li class="list-group-item" ><strong>name: </strong> ${p.name}, <strong>price</strong> ${p.price}eur, <strong>quantity:</strong> ${p.qty} </li>
   `,
     )
     .join('');
@@ -113,5 +123,9 @@ function getTotalByName(arr, name) {
   if (!foundItem) return 'not found';
   return foundItem.total;
 }
+
+// generate all orders from // GET /orders/all and list data in a list (.orders-list)
+// 1. gauti masyva su duomenimis
+// 2. sugeneruoti duomenis html (.orders-list)
 
 // padaryti kad paspaudus ant one-cat div mes gautume jo id consoleje
