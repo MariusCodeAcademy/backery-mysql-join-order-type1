@@ -15,6 +15,21 @@ router.get('/', async (req, res) => {
   return dbSuccess(res, dbResult);
 });
 
+// GET /categories/quantities - gets all categories with quantities
+router.get('/quantities', async (req, res) => {
+  const sql = `
+  SELECT categories.cat_name, COUNT(products.name) AS total
+  FROM categories
+  LEFT JOIN products
+  ON products.category_id = categories.id
+  GROUP BY categories.cat_name`;
+  const dbResult = await dbGetAction(sql);
+  if (dbResult === false) {
+    return dbFail(res, 'error getting all categories with quantities ');
+  }
+  dbSuccess(res, dbResult);
+});
+
 // GET /categories/:name - grazina kategorija kurios pav === :name
 router.get('/:name', async (req, res) => {
   const { name } = req.params;

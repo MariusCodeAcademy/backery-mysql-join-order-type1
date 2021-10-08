@@ -6,3 +6,8 @@
 .one-cat:hover {
   text-decoration: underline;
 }
+
+.cat__qty {
+  font-size: 1rem;
+  font-weight: normal;
+}

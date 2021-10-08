@@ -5,6 +5,13 @@ const url = 'http://localhost:3000';
 const catContainerEl = document.querySelector('.cat-container');
 const productsListEl = document.querySelector('.products-list');
 
+async function init() {
+  const catArr = await getCategories();
+  generateCategories(catArr, catContainerEl);
+  getItemsByCategory('0');
+}
+init();
+
 async function getCategories() {
   const resp = await fetch(`${url}/categories`);
   const data = await resp.json();
@@ -16,17 +23,30 @@ async function getCategories() {
 }
 
 // generate html to display categories
-function generateCategories(dataArr, dest = '') {
+async function generateCategories(dataArr, dest = '') {
+  const catsWithTotals = await getCategoriesAndQtys();
+  console.log('catsWithTotals', catsWithTotals);
+
+  /* 
+  [
+Object { cat_name: "Bread", total: 3 }
+Object { cat_name: "Desert", total: 3 }
+Object { cat_name: "Home made", total: 1 }
+Object { cat_name: "Pica", total: 0 }
+  ]
+  */
+  // getTotalByName(name) - returns total
+
   const firstEl = `
   <div class="one-cat" data-cat-id=0>
-    <h3 class="cat-title border p-5 shadow-sm">All</h3>
+    <h3 class="cat-title border p-5 shadow-sm">All <span class="cat__qty" >(50)</span></h3>
   </div>
   `;
   const result = dataArr
     .map(
       (cat) => `
       <div class="one-cat" data-cat-id=${cat.id} >
-        <h3 class="cat-title border p-5 shadow-sm">${cat.cat_name}</h3>
+        <h3 class="cat-title border p-5 shadow-sm">${cat.cat_name} <span class="cat__qty" >(getTotalByName(cat.cat_name))</span></h3>
       </div>
   `,
     )
@@ -34,12 +54,6 @@ function generateCategories(dataArr, dest = '') {
   // console.log('result', firstEl + result);
   dest.innerHTML = firstEl + result;
 }
-
-async function init() {
-  const catArr = await getCategories();
-  generateCategories(catArr, catContainerEl);
-}
-init();
 
 // catContainer.onclick = (event) => {  ===  catContainer.addEventListener('click', (event) => {
 catContainerEl.addEventListener('click', (event) => {
@@ -61,6 +75,9 @@ async function getItemsByCategory(id) {
 }
 
 function generateProducsList(dataArr, dest) {
+  if (!Array.isArray(dataArr)) {
+    return (dest.innerHTML = `<li><strong>name: </strong> ${dataArr.name}, <strong>price</strong> ${dataArr.price}eur, <strong>quantity:</strong> ${dataArr.qty} </li>`);
+  }
   const productListString = dataArr
     .map(
       (p) => `
@@ -70,6 +87,15 @@ function generateProducsList(dataArr, dest) {
     .join('');
 
   dest.innerHTML = productListString;
+}
+
+async function getCategoriesAndQtys() {
+  const resp = await fetch(`${url}/categories/quantities`);
+  const data = await resp.json();
+  console.log('data', data);
+  return data.msg === 'success'
+    ? data.data
+    : console.warn('Did not get getCategoriesAndQtys');
 }
 
 // padaryti kad paspaudus ant one-cat div mes gautume jo id consoleje
