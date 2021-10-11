@@ -160,6 +160,7 @@ function generateOrdersList(ordersArr, dest) {
 
 function formatDate(dateString) {
   // console.log('formatDate');
+  // https://www.w3schools.com/jsref/jsref_tolocalestring.asp
   const date = new Date(dateString);
   // console.log('date', date);
   const options = {
