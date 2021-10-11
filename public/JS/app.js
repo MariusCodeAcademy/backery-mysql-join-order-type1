@@ -4,11 +4,14 @@ const url = 'http://localhost:3000';
 // elements
 const catContainerEl = document.querySelector('.cat-container');
 const productsListEl = document.querySelector('.products-list');
+const ordersListEl = document.querySelector('.orders-list');
 
 async function init() {
   const catArr = await getCategories();
   generateCategories(catArr, catContainerEl);
   getItemsByCategory('0');
+  const ordersArr = await getAllOrders();
+  generateOrdersList(ordersArr, ordersListEl);
 }
 init();
 
@@ -25,7 +28,7 @@ async function getCategories() {
 // generate html to display categories
 async function generateCategories(dataArr, dest = '') {
   const catsWithTotals = await getCategoriesAndQtys();
-  // console.log('catsWithTotals', catsWithTotals);
+  console.log('catsWithTotals', catsWithTotals);
 
   /* 
   [
@@ -124,8 +127,52 @@ function getTotalByName(arr, name) {
   return foundItem.total;
 }
 
+async function getAllOrders() {
+  const resp = await fetch(`${url}/order/all`);
+  const data = await resp.json();
+  // console.log('data', data);
+  if (data.result.length > 0) {
+    console.log('data orders', data);
+    return data.result;
+  }
+  return 1;
+}
+
+function generateOrdersList(ordersArr, dest) {
+  dest.innerHTML = ordersArr
+    .map(
+      ({ address, client, price, time_stamp }) => `
+      <li class="list-group-item">Adress: ${address}, Client: ${client}, Price: ${price}, Date and time: 
+      ${formatDate(time_stamp)}</li>
+  `,
+    )
+    .join('');
+}
+
 // generate all orders from // GET /orders/all and list data in a list (.orders-list)
 // 1. gauti masyva su duomenimis
 // 2. sugeneruoti duomenis html (.orders-list)
 
-// padaryti kad paspaudus ant one-cat div mes gautume jo id consoleje
+// press button to get Max order
+// press button and get list ordered by price
+// press it again and order ASC => DESC and DEST => ASC
+// press order by and try order by input value
+
+function formatDate(dateString) {
+  // console.log('formatDate');
+  const date = new Date(dateString);
+  // console.log('date', date);
+  const options = {
+    month: 'narrow',
+    day: 'numeric',
+    weekday: 'long',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  const formatedDate = date.toLocaleString('lt-LT', options);
+  // const options1 = { dateStyle: 'full', timeStyle: 'medium', weekday: 'long' };
+  // const formatedDate1 = date.toLocaleString('lt-LT', options1);
+  // console.log('formatedDate1', formatedDate);
+  return formatedDate;
+}
+// formatDate('2021-10-05T06:58:56.000Z');

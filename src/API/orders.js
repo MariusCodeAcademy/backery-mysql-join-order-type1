@@ -60,7 +60,7 @@ router.get('/all', async (req, res) => {
   try {
     const conn = await mysql.createConnection(dbConfig);
     const sql = `
-    SELECT orders.town, orders.address, orders.qty, orders.client, products.name, products.price, categories.cat_name
+    SELECT orders.town, orders.address, orders.qty, orders.client, orders.time_stamp, products.name, products.price, categories.cat_name
     FROM orders
     INNER JOIN products 
     ON orders.product_id = products.id
